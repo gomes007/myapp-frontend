@@ -5,9 +5,7 @@ class Card extends React.Component{
         return (
             <div className="card md-3">
                 <h5 className="card-header">{this.props.title}</h5>
-                <div className="card-body">
-                    {this.props.children}
-                </div>
+                <div className="card-body">{this.props.children}</div>
             </div>
             )
         }
