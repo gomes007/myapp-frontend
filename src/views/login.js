@@ -2,20 +2,32 @@ import React from "react";
 import Card from "../components/card";
 import FormGroup from "../components/form-group";
 import {withRouter} from 'react-router-dom'
+import axios from 'axios'
 
 class Login extends React.Component {
 
     state = {
         email:'',
-        senha: ''
+        senha: '',
+        mensagemErro: null
     }
 
     entrar = () => {
-        console.log('email: ', this.state.email)
-        console.log('senha: ', this.state.senha)
+        axios
+          .post('http://localhost:8080/api/usuarios/autenticar', {
+            email: this.state.email,
+            senha: this.state.senha
+          }).then(response => {
+            this.props.history.push('/home')
+          }).catch(error =>{
+            this.setState({mensagemErro: error.response.data})
+          })
     }
 
 
+    prepareCadastrar = () => {
+      this.props.history.push('/cadastro-usuarios')
+    }
 
 
 
@@ -24,7 +36,8 @@ class Login extends React.Component {
     return (
       <div className="col-md-4" style={{ position: "relative", left: "400px", top: "200px" }}>
         
-          <Card title="Login">              
+          <Card title="Login">
+            <span>{this.state.mensagemErro}</span>              
             <FormGroup label="Email:" htmlFor="inputEmail">
                 <input type="text" className="form-control" id="inputEmail" value={this.state.email} onChange={e => this.setState({email: e.target.value})}/>
             </FormGroup>
@@ -34,7 +47,7 @@ class Login extends React.Component {
             </FormGroup>
             <br/>
             <button onClick={this.entrar} className="btn btn-primary btn-space medium-btn" >Entrar</button>
-            <button className="btn btn-info medium-btn">Cadastrar</button>
+            <button onClick={this.prepareCadastrar} className="btn btn-info medium-btn">Cadastrar</button>
           </Card>
         </div>
       

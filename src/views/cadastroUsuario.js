@@ -17,10 +17,14 @@ class CadastroUsuario extends React.Component {
         console.log(this.state)
     }
 
+    cancelar = () => {
+        this.props.history.push('/login')
+    }
+
   
   render() {
     return (
-    <div className="col-md-5" style={{ position: "relative", left: "500px", top: "100px" }}>
+    <div className="col-md-5" style={{ position: "relative", left: "400px", top: "100px" }}>
         
           <Card title="Cadastro de Usuarios">      
             <FormGroup label="Nome:" htmlFor="inputNome">
@@ -40,7 +44,7 @@ class CadastroUsuario extends React.Component {
             </FormGroup>
             <br/>
             <button onClick={this.cadastrar} className="btn btn-success btn-space medium-btn" >Salvar</button>
-            <button className="btn btn-info medium-btn">Cancelar</button>
+            <button onClick={this.cancelar} className="btn btn-info medium-btn">Cancelar</button>
           </Card>
           
     </div>
