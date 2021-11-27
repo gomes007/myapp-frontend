@@ -2,25 +2,32 @@ import React from "react";
 import Card from "../components/card";
 import FormGroup from "../components/form-group";
 import {withRouter} from 'react-router-dom'
-import axios from 'axios'
+import UsuarioService from "../app/service/usuarioService";
+import LocalStorageService from "../app/service/localStorage";
+
+import {mensagemErro} from '../components/toastr'
 
 class Login extends React.Component {
 
     state = {
         email:'',
-        senha: '',
-        mensagemErro: null
+        senha: ''
+    }
+
+    constructor(){
+      super();
+      this.service = new UsuarioService();
     }
 
     entrar = () => {
-        axios
-          .post('http://localhost:8080/api/usuarios/autenticar', {
-            email: this.state.email,
-            senha: this.state.senha
-          }).then(response => {
+      this.service.autenticar({
+        email: this.state.email,
+        senha: this.state.senha
+      }).then(response => {
+            LocalStorageService.adicionarItem('_usuario_logado', response.data)            
             this.props.history.push('/home')
-          }).catch(error =>{
-            this.setState({mensagemErro: error.response.data})
+          }).catch(erro =>{
+            mensagemErro(erro.response.data)
           })
     }
 
@@ -36,8 +43,7 @@ class Login extends React.Component {
     return (
       <div className="col-md-4" style={{ position: "relative", left: "400px", top: "200px" }}>
         
-          <Card title="Login">
-            <span>{this.state.mensagemErro}</span>              
+          <Card title="Login">            
             <FormGroup label="Email:" htmlFor="inputEmail">
                 <input type="text" className="form-control" id="inputEmail" value={this.state.email} onChange={e => this.setState({email: e.target.value})}/>
             </FormGroup>
@@ -49,8 +55,8 @@ class Login extends React.Component {
             <button onClick={this.entrar} className="btn btn-primary btn-space medium-btn" >Entrar</button>
             <button onClick={this.prepareCadastrar} className="btn btn-info medium-btn">Cadastrar</button>
           </Card>
-        </div>
-      
+          
+        </div>      
     );
   }
 }

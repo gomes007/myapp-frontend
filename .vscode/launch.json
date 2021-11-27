@@ -1,0 +1,14 @@
+{
+    "configurations": [
+    {
+        "name": "Debug Node.js",
+        "processId": "${command:PickProcess}",
+        "request": "attach",
+        "skipFiles": [
+            "<node_internals>/**"
+        ],
+        "type": "pwa-node"
+    }
+    ]
+    
+}
