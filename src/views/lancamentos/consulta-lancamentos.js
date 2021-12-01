@@ -1,12 +1,19 @@
 import React from "react";
 import {withRouter} from 'react-router-dom'
+
+
 import Card from "../../components/card";
 import FormGroup from "../../components/form-group";
 import SelectMenu from "../../components/selectMenu";
 import LancamentosTable from "./lancamentosTable";
 import LancamentoService from "../../app/service/lancamentoService";
 import LocalStorageService from '../../app/service/localStorage'
+
+
 import * as messages from '../../components/toastr'
+
+import { Dialog } from 'primereact/dialog';
+import { Button } from 'primereact/button';
 
 
 class ConsultaLancamentos extends React.Component{
@@ -16,6 +23,8 @@ class ConsultaLancamentos extends React.Component{
         mes: '',
         tipo: '',
         descricao: '',
+        showConfirmDialog: false,
+        lancamentoDeletar: {},
         lancamentos: []
     }
 
@@ -49,12 +58,50 @@ class ConsultaLancamentos extends React.Component{
                     })       
     }
 
+
+    editar = (id) => {
+        console.log('editando', id)
+    }
+
+
+    abrirConfirmacao = (lancamento) => {
+        this.setState({showConfirmDialog: true, lancamentoDeletar: lancamento})
+    }
+
+
+    deletar = () => {
+        this.service.deletar(this.state.lancamentoDeletar.id)
+            .then(response => {
+
+                const lancamentos = this.state.lancamentos
+                const index = lancamentos.indexOf(this.state.lancamentoDeletar)
+                lancamentos.splice(index, 1)
+                this.setState({lancamentos: lancamentos, showConfirmDialog: false})
+
+                messages.mensagemSucesso('registro apagado com sucesso!')
+            }).catch(error =>{
+                messages.mensagemErro('ocorreu um erro ao tentar apagar o registro.')
+            })
+    }
+
+    cancelarDelecao = (lancamento) => {
+        this.setState({showConfirmDialog: false, lancamentoDeletar: {} })
+    }
+
+
+
     render(){
 
         const meses = this.service.obterListaMeses()
-
         const tipos = this.service.obterListaTipos()
 
+
+        const ConfirmDialogfooter = (
+        <div>
+            <Button label="Yes" icon="pi pi-check" onClick={this.deletar} autoFocus />
+            <Button label="No" icon="pi pi-times" onClick={this.cancelarDelecao} className="p-button-secundary" />
+        </div>
+)
         
 
         return (
@@ -83,13 +130,22 @@ class ConsultaLancamentos extends React.Component{
                       
                 <br/>
                 <button onClick={this.buscar} type="button" className="btn btn-success btn-space medium-btn">Buscar</button>
-                <button type="button" className="btn btn-danger medium-btn">Cadastrar</button>
+                <button type="button" className="btn btn-primary medium-btn">Cadastrar</button>
                 </div> 
 
                 <br/>
                 <div>
-                    <LancamentosTable lancamentos={this.state.lancamentos}/>
-                </div>      
+                    <LancamentosTable lancamentos={this.state.lancamentos} deleteAction={this.abrirConfirmacao} editarAction={this.editar}/>
+                </div>
+
+                    <div>
+                      <Dialog header="Apagar registro" visible={this.state.showConfirmDialog} style={{ width: '50vw' }} 
+                              modal={true}
+                              footer={ConfirmDialogfooter} 
+                              onHide={() => this.setState({showConfirmDialog: false})}>
+                            <p>Confirma a exclusão do registro?</p>
+                      </Dialog>  
+                    </div>      
             </Card>
         </div>
             )

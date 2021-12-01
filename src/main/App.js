@@ -11,6 +11,9 @@ import 'bootswatch/dist/cyborg/bootstrap.css'
 import '../custom.css'
 import 'toastr/build/toastr.css'
 
+import 'primereact/resources/themes/lara-light-indigo/theme.css';    
+import 'primereact/resources/primereact.min.css';                    
+import 'primeicons/primeicons.css';                                  
 
 
 
