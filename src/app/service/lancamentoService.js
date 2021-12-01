@@ -29,8 +29,12 @@ export default class LancamentoService extends ApiService {
         return [
             {label: 'Selecione...', value: ''},
             {label: 'Despesa', value: 'DESPESA'},
-            {label: 'Receita', value: 'RECITA'}
+            {label: 'Receita', value: 'RECEITA'}
         ]
+    }
+
+    salvar(lancamento){
+        return this.post('/', lancamento)
     }
 
 

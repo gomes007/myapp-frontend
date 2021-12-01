@@ -10,7 +10,9 @@ import LancamentoService from "../../app/service/lancamentoService";
 import LocalStorageService from '../../app/service/localStorage'
 
 
+
 import * as messages from '../../components/toastr'
+
 
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
@@ -18,6 +20,7 @@ import { Button } from 'primereact/button';
 
 class ConsultaLancamentos extends React.Component{
 
+    
     state = {
         ano: '',
         mes: '',
@@ -92,6 +95,7 @@ class ConsultaLancamentos extends React.Component{
 
     render(){
 
+
         const meses = this.service.obterListaMeses()
         const tipos = this.service.obterListaTipos()
 
@@ -143,7 +147,7 @@ class ConsultaLancamentos extends React.Component{
                               modal={true}
                               footer={ConfirmDialogfooter} 
                               onHide={() => this.setState({showConfirmDialog: false})}>
-                            <p>Confirma a exclusão do registro?</p>
+                            <p>Confirmar a exclusão do registro?</p>
                       </Dialog>  
                     </div>      
             </Card>

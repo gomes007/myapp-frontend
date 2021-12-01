@@ -5,12 +5,15 @@ import currenciesFormater from 'currency-formatter'
 export default props => {
 
     const rows = props.lancamentos.map(lancamento => {
+
+        const MESES = [ 'JAN', 'FEV', 'MAR', 'ABRI', 'MAI', 'JUN', 'JUL', 'AGO', 'SET','OUT', 'NOV', 'DEZ']
+
         return (
             <tr key={lancamento.id}>
                 <td>{lancamento.descricao}</td>
                 <td>{currenciesFormater.format(lancamento.valor, {locale: 'pt-BR'})}</td>
                 <td>{lancamento.tipo}</td>
-                <td>{lancamento.mes}</td>
+                <td>{MESES[lancamento.mes -1]}</td>
                 <td>{lancamento.status}</td>
                 <td>
                     <button onClick={e => props.editarAction(lancamento.id)} type="button" className="btn btn-primary btn-space medium-btn">Editar</button>
