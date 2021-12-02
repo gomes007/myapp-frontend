@@ -16,6 +16,7 @@ class CadastroLancamentos extends React.Component {
 
   state = {
     id: null,
+    usuario: null,
     descricao: '',
     valor: '',
     mes: '',
@@ -29,6 +30,19 @@ class CadastroLancamentos extends React.Component {
     this.service = new LancamentoService();
 }
 
+  //usado tbem para editar registro que vem da tela consultar lancamentos
+  componentDidMount(){
+    const params = this.props.match.params
+    if(params.id){
+      this.service.obterPorId(params.id)
+          .then(response => {
+            this.setState({...response.data})
+          }).catch(erros => {
+            messages.mensagemErro(erros.response.data)
+          })
+    }
+  }
+
 
   handleChange = (event) => {
     const value = event.target.value
@@ -40,8 +54,7 @@ class CadastroLancamentos extends React.Component {
   submit = () => {
 
     const usuarioLogado = LocalStorageService.obterItem('_usuario_logado')
-
-    
+   
     const {descricao, valor, tipo, mes, ano} = this.state
     const lancamento = {descricao, valor, tipo, mes, ano, usuario: usuarioLogado.id}
 
@@ -55,6 +68,23 @@ class CadastroLancamentos extends React.Component {
           messages.mensagemErro(error.response.data)
         })
 
+  }
+
+
+  atualizar = () => {
+       
+    const {descricao, valor, tipo, mes, ano, id, usuario, status} = this.state
+    const lancamento = {descricao, valor, tipo, mes, ano, id, usuario, status}
+
+    this.service
+        .atualizar(lancamento)
+        .then(response => {
+          this.setState({descricao:'', valor:'', tipo:'', mes:'', ano:''}) 
+          messages.mensagemSucesso('registro atualizado com sucesso!')
+        })
+        .catch(error => {
+          messages.mensagemErro(error.response.data)
+        })
   }
 
 
@@ -126,7 +156,8 @@ class CadastroLancamentos extends React.Component {
         </div>
         <br/>
         <button onClick={this.submit} type="button" className="btn btn-success btn-space medium-btn">Salvar</button>
-        <button type="button" className="btn btn-secondary medium-btn">Cancelar</button>
+        <button onClick={this.atualizar} type="button" className="btn btn-success btn-space medium-btn">Atualizar</button>
+        <button onClick={e => this.props.history.push('/consulta-lancamentos')} type="button" className="btn btn-secondary medium-btn">Cancelar</button>
       </Card>
     </div>
     );
