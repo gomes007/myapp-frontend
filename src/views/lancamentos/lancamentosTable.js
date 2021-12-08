@@ -1,6 +1,7 @@
 import React from "react";
 import currenciesFormater from 'currency-formatter'
 
+
 // eslint-disable-next-line import/no-anonymous-default-export
 export default props => {
 
@@ -16,6 +17,8 @@ export default props => {
                 <td>{MESES[lancamento.mes -1]}</td>
                 <td>{lancamento.status}</td>
                 <td>
+                    <button onClick={e => props.alterarStatus(lancamento, 'EFETIVADO')} type="button"> <i className="pi-check"></i> Efetivar </button>
+                    <button onClick={e => props.alterarStatus(lancamento, 'CANCELADO')} type="button"> <i className="pi-times"></i> Cancelar </button>
                     <button onClick={e => props.editarAction(lancamento.id)} type="button" className="btn btn-primary btn-space medium-btn">Editar</button>
                     <button onClick={e => props.deleteAction(lancamento)} type="button" className="btn btn-danger medium-btn">Deletar</button>
                 </td>

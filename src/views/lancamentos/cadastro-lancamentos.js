@@ -22,7 +22,8 @@ class CadastroLancamentos extends React.Component {
     mes: '',
     ano: '',
     tipo: '',
-    status: ''
+    status: '',
+    atualizando: false
   }
 
   constructor(){
@@ -30,13 +31,13 @@ class CadastroLancamentos extends React.Component {
     this.service = new LancamentoService();
 }
 
-  //usado tbem para editar registro que vem da tela consultar lancamentos
+  //usado tbem para editar registro que vem da tela consultar lancamentos e esse componentDidMount renderiza a tela apos carregar o formulario
   componentDidMount(){
     const params = this.props.match.params
     if(params.id){
       this.service.obterPorId(params.id)
           .then(response => {
-            this.setState({...response.data})
+            this.setState({...response.data, atualizando: true})
           }).catch(erros => {
             messages.mensagemErro(erros.response.data)
           })
@@ -57,6 +58,14 @@ class CadastroLancamentos extends React.Component {
    
     const {descricao, valor, tipo, mes, ano} = this.state
     const lancamento = {descricao, valor, tipo, mes, ano, usuario: usuarioLogado.id}
+
+    try {
+      this.service.validar(lancamento)
+    } catch (ErroValidacao) {
+      const mensagens = ErroValidacao.mensagens
+      mensagens.forEach(msg => messages.mensagemErro(msg))
+      return false
+    }
 
     this.service
         .salvar(lancamento)
@@ -96,7 +105,7 @@ class CadastroLancamentos extends React.Component {
 
     return (
     <div className="col-md-8 row" style={{ position: "relative",  top: "100px" }}> 
-      <Card title= 'Cadastro de Lancamentos'>
+      <Card title= {this.state.atualizando ? 'Atualizar Lancamentos' : 'Cadastro de Lancamentos'}>
         <div className="row">
             <div className="col-md-6">
                 <FormGroup id="inputDescricao" label="Descricao: *">
@@ -155,8 +164,9 @@ class CadastroLancamentos extends React.Component {
                     
         </div>
         <br/>
-        <button onClick={this.submit} type="button" className="btn btn-success btn-space medium-btn">Salvar</button>
-        <button onClick={this.atualizar} type="button" className="btn btn-success btn-space medium-btn">Atualizar</button>
+        {this.state.atualizando ? <button onClick={this.atualizar} type="button" className="btn btn-success btn-space medium-btn">Atualizar</button>
+          : <button onClick={this.submit} type="button" className="btn btn-success btn-space medium-btn">Salvar</button>}
+        
         <button onClick={e => this.props.history.push('/consulta-lancamentos')} type="button" className="btn btn-secondary medium-btn">Cancelar</button>
       </Card>
     </div>

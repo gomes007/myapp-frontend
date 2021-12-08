@@ -19,8 +19,7 @@ import { Button } from 'primereact/button';
 
 
 class ConsultaLancamentos extends React.Component{
-
-    
+        
     state = {
         ano: '',
         mes: '',
@@ -95,6 +94,22 @@ class ConsultaLancamentos extends React.Component{
         this.props.history.push('/cadastro-lancamentos')
     }
 
+    alterarStatus = (lancamento, status) => {
+        this.service
+            .alterarStatus(lancamento.id, status)
+            .then(response => {
+                const lancamentos = this.state.lancamentos
+                const index = lancamentos.indexOf(lancamento)
+                if (index !== -1) {
+                    lancamento['status'] = status
+                    lancamentos[index] = lancamento
+                    this.setState({lancamento})
+                }
+
+                messages.mensagemSucesso('status atualizado!')
+            })
+    }
+
 
     render(){
 
@@ -142,7 +157,7 @@ class ConsultaLancamentos extends React.Component{
 
                 <br/>
                 <div>
-                    <LancamentosTable lancamentos={this.state.lancamentos} deleteAction={this.abrirConfirmacao} editarAction={this.editar}/>
+                    <LancamentosTable lancamentos={this.state.lancamentos} deleteAction={this.abrirConfirmacao} editarAction={this.editar} alterarStatus={this.alterarStatus}/>
                 </div>
 
                     <div>

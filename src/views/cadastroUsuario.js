@@ -4,6 +4,7 @@ import FormGroup from "../components/form-group";
 import {withRouter} from 'react-router-dom'
 import UsuarioService from "../app/service/usuarioService";
 import {mensagemErro, mensagemSucesso} from '../components/toastr'
+import * as messages from '../components/toastr'
 
 
 class CadastroUsuario extends React.Component {
@@ -20,47 +21,20 @@ class CadastroUsuario extends React.Component {
         this.service = new UsuarioService()
     }
 
-    validar(){
-        
-        const msgs = []
-
-        if (!this.state.nome) {
-            msgs.push('campo nome e obrigatorio')
-        }
-
-        if (!this.state.email) {
-            msgs.push('campo email e obrigatorio')
-        } else if (!this.state.email.match(/^[a-z0-9.]+@[a-z0-9]+\.[a-z]/)) {
-            msgs.push('informe email valido')
-        }
-
-        if (!this.state.senha || !this.state.senhaRepeticao) {
-            msgs.push('digite a senha 2x')
-        } else if (this.state.senha !== this.state.senhaRepeticao) {
-            msgs.push('as senhas precisam se iguais nos 2 campos')
-        }
-            
-        return msgs;
-        
-    }
-
+ 
     cadastrar = () => {
 
-        const msgs = this.validar();
+        const {nome, email, senha, senhaRepeticao} = this.state
+        const usuario = {nome, email, senha, senhaRepeticao}
 
-        if (msgs && msgs.length > 0) {
-            msgs.forEach((msg, index) => {
-                mensagemErro(msg)
-            })
+        try {
+            this.service.validar(usuario)
+          } catch (ErroValidacao) {
+            const mensagens = ErroValidacao.mensagens
+            mensagens.forEach(msg => messages.mensagemErro(msg))
             return false
-        }
+          }
 
-
-        const usuario = {
-            nome: this.state.nome,
-            email: this.state.email,
-            senha: this.state.senha
-        }
         this.service.salvar(usuario)
         .then(response => {                
                 mensagemSucesso('cadastrado com sucesso!')
