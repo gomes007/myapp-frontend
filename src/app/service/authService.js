@@ -15,4 +15,13 @@ export default class AuthService{
     }
 
 
+    static logar(usuario){
+        LocalStorageService.adicionarItem(USUARIO_LOGADO, usuario)
+    }
+
+    static obterUsuarioAutenticado(){
+        return LocalStorageService.obterItem(USUARIO_LOGADO)
+    }
+
+
 }
